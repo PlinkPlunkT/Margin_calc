@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>保证金计算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            max-width: 400px;
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+            width: 100%;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        .result {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>保证金计算器</h2>
+    <form id="marginCalculator" onsubmit="return false;">
+        <label for="entryPrice">入场价格 (USD):</label><br>
+        <input type="number" id="entryPrice" required><br><br>
+
+        <label for="stopLossPrice">止损价格 (USD):</label><br>
+        <input type="number" id="stopLossPrice" required><br><br>
+
+        <label for="leverage">杠杆倍数:</label><br>
+        <input type="number" id="leverage" value="20"><br><br>
+
+        <label for="expectedLoss">期望止损 (USD):</label><br>
+        <input type="number" id="expectedLoss" required><br><br>
+
+        <button onclick="calculateMargin()">计算保证金</button>
+    </form>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        function calculateMargin() {
+            // 获取用户输入的数值
+            const entryPrice = parseFloat(document.getElementById("entryPrice").value);
+            const stopLossPrice = parseFloat(document.getElementById("stopLossPrice").value);
+            const leverage = parseFloat(document.getElementById("leverage").value);
+            const expectedLoss = parseFloat(document.getElementById("expectedLoss").value);
+
+            // 验证输入的合理性
+            if (entryPrice <= 0 || stopLossPrice <= 0 || leverage <= 0 || expectedLoss <= 0) {
+                document.getElementById("result").innerHTML = "请输入有效的数值。";
+                return;
+            }
+
+            // 计算亏损百分比
+            const lossPercentage = Math.abs((entryPrice - stopLossPrice) / entryPrice);
+
+            // 计算所需保证金
+            const margin = (expectedLoss / (lossPercentage * leverage)).toFixed(2);
+
+            // 显示计算结果
+            document.getElementById("result").innerHTML = `所需保证金为: $${margin}`;
+        }
+    </script>
+</body>
+</html>
